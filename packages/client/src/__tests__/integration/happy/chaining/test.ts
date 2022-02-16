@@ -79,8 +79,71 @@ describe('chaining', () => {
         .property(),
     )
 
+    a.push(
+      await prisma.user
+        .create({
+          data: {
+            email: 'a@a.de',
+          },
+        })
+        .property(),
+    )
+
+    a.push(
+      await prisma.user
+        .update({
+          where: {
+            email: 'a@a.de',
+          },
+          data: {
+            email: 'a2@a.de',
+          },
+        })
+        .property()
+        .house(),
+    )
+
+    a.push(
+      await prisma.user
+        .delete({
+          where: {
+            email: 'a@a.de',
+          },
+        })
+        .property()
+        .house()
+        .like()
+        .post()
+        .author()
+        .property(),
+    )
+
+    a.push(
+      await prisma.user
+        .upsert({
+          where: {
+            email: 'a@a.de',
+          },
+          create: {
+            email: 'a@a.de',
+          },
+          update: {
+            email: 'a2@a.de',
+          },
+        })
+        .property()
+        .house()
+        .like()
+        .post()
+        .author(),
+    )
+
     expect(a).toMatchInlineSnapshot(`
       Array [
+        null,
+        null,
+        null,
+        null,
         null,
         null,
         null,
@@ -114,8 +177,63 @@ describe('chaining', () => {
         .user(),
     )
 
+    a.push(
+      await prisma.user
+        .create({
+          data: {
+            email: 'a@a.de',
+          },
+        })
+        .Banking()
+        .user(),
+    )
+
+    a.push(
+      await prisma.user
+        .update({
+          where: {
+            email: 'a@a.de',
+          },
+          data: {
+            email: 'a2@a.de',
+          },
+        })
+        .Banking(),
+    )
+
+    a.push(
+      await prisma.user
+        .delete({
+          where: {
+            email: 'a@a.de',
+          },
+        })
+        .Banking()
+        .user(),
+    )
+
+    a.push(
+      await prisma.user
+        .upsert({
+          where: {
+            email: 'a@a.de',
+          },
+          create: {
+            email: 'a@a.de',
+          },
+          update: {
+            email: 'a2@a.de',
+          },
+        })
+        .Banking(),
+    )
+
     expect(a).toMatchInlineSnapshot(`
       Array [
+        null,
+        null,
+        null,
+        null,
         null,
         null,
       ]
