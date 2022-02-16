@@ -51,7 +51,7 @@ export function applyModel(client: Client, dmmfModelName: string) {
       }
 
       // we give the control over action for building the fluent api
-      if (prop === 'findUnique' || prop === 'findFirst') {
+      if (['findUnique', 'findFirst', 'create', 'update', 'upsert', 'delete'].includes(prop)) {
         return applyFluent(client, dmmfModelName, action)
       }
 
