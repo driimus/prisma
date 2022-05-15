@@ -1,7 +1,7 @@
 import indent from 'indent-string'
 
 import { DMMF } from '../../runtime/dmmf-types'
-import { getArgName, getModelArgName, getPayloadName, Projection } from '../utils'
+import { getArgName, getModelArgName, getPayloadName, getSelectName, Projection } from '../utils'
 import type { Generatable } from './Generatable'
 import type { OutputType } from './Output'
 
@@ -13,6 +13,7 @@ export class PayloadType implements Generatable {
     const { name } = type
 
     const argsName = getArgName(name, false)
+    const selectName = getSelectName(name)
 
     const include = this.renderRelations(Projection.include)
     const select = this.renderRelations(Projection.select)
@@ -22,18 +23,19 @@ export class PayloadType implements Generatable {
     return `\
 export type ${getPayloadName(name)}<
   S extends boolean | null | undefined | ${argsName},
-  U = keyof S
-    > = S extends true
-      ? ${name}
+  > = S extends true
+  ? ${name}
   : S extends undefined
   ? never
   : S extends ${argsName}${findManyArg}
-  ?'include' extends U
+  ?'include' extends keyof S
   ? ${name} ${include.length > 0 ? ` & ${include}` : ''}
-  : 'select' extends U
-  ? ${select}
+  : 'select' extends keyof S
+  ? S['select'] extends ${selectName} 
+    ? ${select}
+    : ${name}
   : ${name}
-: ${name}
+: ${name} // fixes conditional false
 `
   }
   private renderRelations(projection: Projection): string {
