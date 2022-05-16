@@ -35,7 +35,7 @@ export type ${getPayloadName(name)}<
     ? ${select}
     : ${name}
   : ${name}
-: ${name} // fixes conditional false
+: S extends false ? undefined : ${name} // fixes conditional false
 `
   }
   private renderRelations(projection: Projection): string {
