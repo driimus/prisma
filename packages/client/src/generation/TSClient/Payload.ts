@@ -58,7 +58,6 @@ export type ${payloadName}<
     return `{
   [P in TrueKeys<S['${projection}']>]:
 ${indent(
-  // TODO: unwrap falsy return types for arrays
   relations
     .map(
       (f) =>
@@ -79,7 +78,7 @@ ${indent(
       return str
     }
     if (outputType.isList) {
-      return `Array < ${str}> `
+      return `TruthyArray < ${str} > `
     }
     if (str === 'Null') {
       return 'null'
