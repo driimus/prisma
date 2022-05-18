@@ -245,6 +245,11 @@ export type TruthyKeys<T> = {
 
 export type TrueKeys<T> = TruthyKeys<Prisma__Pick<T, RequiredKeys<T>>>
 
+export type TruthyArray<T> =
+  Exclude<T, undefined | null> extends never 
+  ? never 
+  : Array<Exclude<T, undefined | null>> | Extract<T, undefined | null>
+
 /**
  * Subset
  * @desc From \`T\` pick properties that exist in \`U\`. Simple version of Intersection
