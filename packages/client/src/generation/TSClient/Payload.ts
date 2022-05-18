@@ -1,7 +1,7 @@
 import indent from 'indent-string'
 
 import { DMMF } from '../../runtime/dmmf-types'
-import { getArgName, getModelArgName, getPayloadName, getSelectName, Projection } from '../utils'
+import { getArgName, getModelArgName, getPayloadName, Projection } from '../utils'
 import type { Generatable } from './Generatable'
 import type { OutputType } from './Output'
 
@@ -13,7 +13,7 @@ export class PayloadType implements Generatable {
     const { name } = type
 
     const argsName = getArgName(name, false)
-    const selectName = getSelectName(name)
+    const payloadName = getPayloadName(name)
 
     const include = this.renderRelations(Projection.include)
     const select = this.renderRelations(Projection.select)
@@ -21,8 +21,9 @@ export class PayloadType implements Generatable {
     const findManyArg = this.findMany ? ` | ${getModelArgName(name, DMMF.ModelAction.findMany)}` : ''
 
     return `\
-export type ${getPayloadName(name)}<
+export type ${payloadName}<
   S extends boolean | null | undefined | ${argsName},
+  IsRelationalPayload extends boolean = false,
   > = S extends true
   ? ${name}
   : S extends undefined
@@ -31,13 +32,16 @@ export type ${getPayloadName(name)}<
   ?'include' extends keyof S
   ? ${name} ${include.length > 0 ? ` & ${include}` : ''}
   : 'select' extends keyof S
-  ? S['select'] extends ${selectName} 
-    ? ${select}
+  ? S['select'] extends undefined | null
+  ? IsRelationalPayload extends true
+    ? undefined
     : ${name}
+  : ${select}
   : ${name}
 : S extends false ? undefined : ${name} // fixes conditional false
 `
   }
+
   private renderRelations(projection: Projection): string {
     const { type } = this
     // TODO: can be optimized, we're calling the filter two times
@@ -45,11 +49,15 @@ export type ${getPayloadName(name)}<
     if (relations.length === 0 && projection === Projection.include) {
       return ''
     }
-    const selectPrefix = projection === Projection.select ? ` P extends keyof ${type.name} ? ${type.name}[P] :` : ''
+    const selectPrefix =
+      projection === Projection.select
+        ? ` P extends keyof ${type.name} ? ${type.name}[P] | (false extends S['${projection}'][P] ? undefined : never) :`
+        : ''
 
     return `{
   [P in TrueKeys<S['${projection}']>]:
 ${indent(
+  // TODO: unwrap falsy return types for arrays
   relations
     .map(
       (f) =>
@@ -61,8 +69,9 @@ ${indent(
     .join('\n'),
   6,
 )} ${selectPrefix} never
-} `
+  } `
   }
+
   private wrapType(field: DMMF.SchemaField, str: string): string {
     const { outputType } = field
     if (!field.isNullable && !outputType.isList) {
