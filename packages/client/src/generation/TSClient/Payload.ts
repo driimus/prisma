@@ -29,10 +29,10 @@ export type ${payloadName}<
   : S extends undefined
   ? never
   : S extends ${argsName}${findManyArg}
-  ?'include' extends keyof S
+  ? S extends { include: infer ProjectionFilter }
   ? ${name} ${include.length > 0 ? ` & ${include}` : ''}
-  : 'select' extends keyof S
-  ? S['select'] extends undefined | null
+  : S extends { select: infer ProjectionFilter }
+  ? ProjectionFilter extends undefined | null
   ? IsRelationalPayload extends true
     ? undefined
     : ${name}
@@ -51,18 +51,18 @@ export type ${payloadName}<
     }
     const selectPrefix =
       projection === Projection.select
-        ? ` P extends keyof ${type.name} ? ${type.name}[P] | (false extends S['${projection}'][P] ? undefined : never) :`
+        ? ` P extends keyof ${type.name} ? ${type.name}[P] | (false extends ProjectionFilter[P] ? undefined : never) :`
         : ''
 
     return `{
-  [P in TrueKeys<S['${projection}']>]:
+  [P in TrueKeys<ProjectionFilter>]:
 ${indent(
   relations
     .map(
       (f) =>
         `P extends '${f.name}' ? ${this.wrapType(
           f,
-          `${getPayloadName((f.outputType.type as DMMF.OutputType).name)}<S['${projection}'][P]>`,
+          `${getPayloadName((f.outputType.type as DMMF.OutputType).name)}<ProjectionFilter[P]>`,
         )} :`,
     )
     .join('\n'),
