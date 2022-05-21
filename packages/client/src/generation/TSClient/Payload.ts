@@ -77,7 +77,7 @@ ${indent(
       return str
     }
     if (outputType.isList) {
-      return `TruthyArray < ${str} > `
+      return `TruthyArray<${str}>`
     }
     if (str === 'Null') {
       return 'null'
