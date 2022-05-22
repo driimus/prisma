@@ -225,6 +225,7 @@ importers:
       '@swc/core': 1.2.203
       '@swc/jest': 0.2.21
       '@timsuchanek/copy': 1.4.5
+      '@type-challenges/utils': ^0.1.1
       '@types/debug': 4.1.7
       '@types/jest': 28.1.1
       '@types/js-levenshtein': 1.1.1
@@ -291,6 +292,7 @@ importers:
       '@swc/core': 1.2.203
       '@swc/jest': 0.2.21_@swc+core@1.2.203
       '@timsuchanek/copy': 1.4.5
+      '@type-challenges/utils': 0.1.1
       '@types/debug': 4.1.7
       '@types/jest': 28.1.1
       '@types/js-levenshtein': 1.1.1
@@ -2275,6 +2277,10 @@ packages:
   /@tsd/typescript/4.7.3:
     resolution: {integrity: sha512-jjxcFpaWwETZZedPuPhWehlHA6cifStKV8viwc80FUVSUdv6sC4V0dWJ3OCBIWOQcxk7roxCDvzrc40CoDr5tg==}
     hasBin: true
+    dev: true
+
+  /@type-challenges/utils/0.1.1:
+    resolution: {integrity: sha512-A7ljYfBM+FLw+NDyuYvGBJiCEV9c0lPWEAdzfOAkb3JFqfLl0Iv/WhWMMARHiRKlmmiD1g8gz/507yVvHdQUYA==}
     dev: true
 
   /@types/argparse/1.0.38:
