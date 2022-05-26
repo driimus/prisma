@@ -27,7 +27,7 @@ export type ${payloadName}<
   > = S extends true
   ? ${name}
   : S extends undefined
-  ? never
+  ? IsRelationalPayload extends true ? undefined : never
   : S extends ${argsName}${findManyArg}
   ? S extends { include: infer ProjectionFilter }
   ? ${name} ${include.length > 0 ? ` & ${include}` : ''}
@@ -38,7 +38,7 @@ export type ${payloadName}<
     : ${name}
   : ${select}
   : ${name}
-: S extends false ? undefined : ${name} // fixes conditional false
+: S extends false ? undefined : ${name}
 `
   }
 
@@ -62,7 +62,7 @@ ${indent(
       (f) =>
         `P extends '${f.name}' ? ${this.wrapType(
           f,
-          `${getPayloadName((f.outputType.type as DMMF.OutputType).name)}<ProjectionFilter[P]>`,
+          `${getPayloadName((f.outputType.type as DMMF.OutputType).name)}<ProjectionFilter[P], true>`,
         )} :`,
     )
     .join('\n'),
