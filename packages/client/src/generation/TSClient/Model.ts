@@ -309,7 +309,7 @@ ${!this.dmmf.typeMap[model.name] ? this.getAggregationTypes() : ''}
 
 ${!this.dmmf.typeMap[model.name] ? this.getGroupByTypes() : ''}
 
-export type ${getSelectName(model.name)} = {
+export type ${getSelectName(model.name)} = RequireAtLeastOne<{
 ${indent(
   outputType.fields
     .map((f) => {
@@ -324,7 +324,7 @@ ${indent(
     .join('\n'),
   TAB_SIZE,
 )}
-}
+}>
 ${includeType}
 ${new PayloadType(this.outputType!, !this.dmmf.typeMap[model.name]).toTS()}
 

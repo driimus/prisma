@@ -250,6 +250,20 @@ export type TruthyArray<T> =
   ? never 
   : Array<Exclude<T, undefined | null>> | Extract<T, undefined | null>
 
+  type RequireTruthy<T> = T extends false
+  ? never
+  : T extends true
+  ? true
+  : RequireAtLeastOne<T>;
+
+type RequireTruthyFields<U, T = Extract<U, {}>> = {
+  [P in keyof T]-?: RequireTruthy<T[P]>;
+};
+
+export type RequireAtLeastOne<T> = {
+  [Key in keyof T]-?: RequireTruthyFields<Pick<T, Key>> & Omit<T, Key>;
+}[keyof T];
+
 /**
  * Subset
  * @desc From \`T\` pick properties that exist in \`U\`. Simple version of Intersection
