@@ -1,4 +1,4 @@
-import { expectError, expectType } from 'tsd'
+import { expectAssignable, expectError, expectNotAssignable, expectType } from 'tsd'
 
 import { Post, Prisma, PrismaClient, User } from '.'
 import { ExpectTrue, Equal as Equals, NotEqual, ExpectFalse } from '@type-challenges/utils'
@@ -68,7 +68,18 @@ type RequireAtLeastOneTruthyRelational = [
     >
   >,
   // @ts-expect-error require at least one truthy key
+  Prisma.UserGetPayload<{ select: { posts: { select: null } } }>,
+  // @ts-expect-error require at least one truthy key
   Prisma.UserGetPayload<{ select: { posts: null } }>,
+  // @ts-expect-error require at least one truthy key
+  Prisma.UserGetPayload<{ select: { posts: null | true } }>,
+]
+
+type RequireAtLeastOneTruthy = [
+  // @ts-expect-error require at least one truthy key
+  Prisma.UserGetPayload<{ select: { id: false } }>,
+  // @ts-expect-error empty select filter not allowed at runtime
+  Prisma.UserGetPayload<{ select: {} }>,
 ]
 
 type ConditionalSelect = [
@@ -177,4 +188,19 @@ type FalseRelationalSelect = [
   expectType<User>(await prisma.user.findFirst({ select: undefined, rejectOnNotFound: true }))
   expectType<{ id: undefined | number }>({} as Prisma.UserGetPayload<{ select: { id: true | false; name: true } }>)
   expectType<{ id: undefined | number }>({} as Prisma.UserGetPayload<{ select: { id: true | false; name: true } }>)
+
+  // require at least one
+  expectAssignable<Prisma.PostArgs>({ select: { id: true } })
+  expectNotAssignable<Prisma.PostArgs>({ select: { id: false } })
+  expectAssignable<Prisma.PostArgs>({ select: { id: false, authorId: true } })
+  expectNotAssignable<Prisma.PostArgs>({
+    select: { id: false, author: { select: { id: false } } },
+  })
+  expectAssignable<Prisma.PostArgs>({
+    select: { id: false, author: { select: { id: true } } },
+  })
+  expectAssignable<Prisma.PostArgs>({
+    select: { id: false, author: { select: { id: false, name: true } } },
+  })
+  expectNotAssignable<Prisma.PostArgs>({ select: { id: false, author: false } })
 })()
