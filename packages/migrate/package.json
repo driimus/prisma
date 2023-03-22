@@ -50,7 +50,7 @@
     "get-stdin": "8.0.0",
     "has-yarn": "2.1.0",
     "indent-string": "4.0.0",
-    "log-update": "4.0.0",
+    "log-update": "5.0.1",
     "mariadb": "2.5.5",
     "mssql": "8.0.1",
     "new-github-issue-url": "0.2.1",
