@@ -45,7 +45,7 @@
     "p-retry": "4.6.1",
     "strip-ansi": "6.0.1",
     "terminal-link": "2.1.1",
-    "undici": "3.3.6"
+    "undici": "5.21.0"
   },
   "files": [
     "README.md",
