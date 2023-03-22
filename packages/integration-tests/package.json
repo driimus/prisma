@@ -26,7 +26,7 @@
     "fs-jetpack": "4.3.0",
     "jest": "27.5.1",
     "mariadb": "2.5.5",
-    "mssql": "8.0.1",
+    "mssql": "9.1.1",
     "pg": "8.7.1",
     "replace-string": "3.1.0",
     "sqlite-async": "1.1.2",
